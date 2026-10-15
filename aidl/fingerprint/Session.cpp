@@ -190,9 +190,18 @@ ndk::ScopedAStatus Session::onUiReady() {
     return ndk::ScopedAStatus::ok();
 }
 
+void Session::notifyOperationContext(const common::OperationContext& context) {
+    if (mUdfpsHandler) {
+        mUdfpsHandler->onDisplayOffChanged(context.isAod ||
+                                           context.displayState == common::DisplayState::AOD ||
+                                           context.displayState == common::DisplayState::NO_UI);
+    }
+}
+
 ndk::ScopedAStatus Session::authenticateWithContext(
-        int64_t operationId, const common::OperationContext& /*context*/,
+        int64_t operationId, const common::OperationContext& context,
         std::shared_ptr<common::ICancellationSignal>* out) {
+    notifyOperationContext(context);
     return authenticate(operationId, out);
 }
 
@@ -216,7 +225,8 @@ ndk::ScopedAStatus Session::onPointerUpWithContext(const PointerContext& context
     return onPointerUp(context.pointerId);
 }
 
-ndk::ScopedAStatus Session::onContextChanged(const common::OperationContext& /*context*/) {
+ndk::ScopedAStatus Session::onContextChanged(const common::OperationContext& context) {
+    notifyOperationContext(context);
     return ndk::ScopedAStatus::ok();
 }
 
@@ -224,7 +234,10 @@ ndk::ScopedAStatus Session::onPointerCancelWithContext(const PointerContext& /*c
     return ndk::ScopedAStatus::ok();
 }
 
-ndk::ScopedAStatus Session::setIgnoreDisplayTouches(bool /*shouldIgnore*/) {
+ndk::ScopedAStatus Session::setIgnoreDisplayTouches(bool shouldIgnore) {
+    if (mUdfpsHandler) {
+        mUdfpsHandler->setIgnoreDisplayTouches(shouldIgnore);
+    }
     return ndk::ScopedAStatus::ok();
 }
 

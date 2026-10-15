@@ -25,6 +25,12 @@ class UdfpsHandler {
     virtual void onAuthenticationSucceeded() {};
     virtual void onAuthenticationFailed() {};
     virtual void cancel() {};
+
+    // ISession::setIgnoreDisplayTouches: SystemUI's UDFPS overlay is not taking touches,
+    // e.g. an app (the secure camera) is shown over the lockscreen.
+    virtual void setIgnoreDisplayTouches(bool /*ignore*/) {};
+    // OperationContext: true while the display shows no UI or AOD (screen off or dozing).
+    virtual void onDisplayOffChanged(bool /*off*/) {};
 };
 
 struct UdfpsHandlerFactory {

@@ -78,6 +78,7 @@ class Session : public BnSession {
     static Error VendorErrorFilter(int32_t error, int32_t* vendorCode);
     static AcquiredInfo VendorAcquiredFilter(int32_t info, int32_t* vendorCode);
 
+    void notifyOperationContext(const common::OperationContext& context);
     bool checkSensorLockout();
     void clearLockout(bool clearAttemptCounter);
     void startLockoutTimer(int64_t timeout);
