@@ -230,8 +230,9 @@ ndk::ScopedAStatus Session::onContextChanged(const common::OperationContext& con
     return ndk::ScopedAStatus::ok();
 }
 
-ndk::ScopedAStatus Session::onPointerCancelWithContext(const PointerContext& /*context*/) {
-    return ndk::ScopedAStatus::ok();
+ndk::ScopedAStatus Session::onPointerCancelWithContext(const PointerContext& context) {
+    // A canceled pointer is no longer down. Release the UDFPS state just as onPointerUp does.
+    return onPointerUpWithContext(context);
 }
 
 ndk::ScopedAStatus Session::setIgnoreDisplayTouches(bool shouldIgnore) {
